@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuralitx — Results</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #ffffff;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .logo img { height: 28px; width: auto; }
+
+        .nav-links a {
+            color: #0a0a0a;
+            text-decoration: none;
+            margin-left: 2.5rem;
+            font-size: 0.9rem;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover { opacity: 0.5; }
+
+        .nav-cta {
+            border: 1px solid #0a0a0a !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 999px;
+        }
+
+        .results-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 6rem 2rem;
+        }
+
+        .results-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-container h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 3rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 3rem;
+        }
+
+        .status-clean {
+            background: #f0faf5;
+            color: #1a7a4a;
+            border: 1px solid #b8ecd4;
+        }
+
+        .status-artifact {
+            background: #fff8f0;
+            color: #9a4a00;
+            border: 1px solid #ffd8a8;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .result-card h3 {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 1.25rem;
+        }
+
+        .band-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .band-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            width: 50px;
+            color: #444;
+        }
+
+        .band-bar-bg {
+            flex: 1;
+            height: 4px;
+            background: #e8e8e8;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .band-bar {
+            height: 100%;
+            background: #0a0a0a;
+            border-radius: 999px;
+        }
+
+        .band-value {
+            font-size: 0.75rem;
+            color: #888;
+            width: 60px;
+            text-align: right;
+        }
+
+        .artifact-stat { margin-bottom: 1rem; }
+
+        .artifact-stat-label {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.25rem;
+        }
+
+        .artifact-stat-value {
+            font-size: 1.4rem;
+            font-weight: 300;
+        }
+
+        .nn-result {
+            grid-column: span 2;
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nn-result h3 {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .nn-classification {
+            font-size: 1.8rem;
+            font-weight: 300;
+            text-transform: capitalize;
+        }
+
+        .nn-confidence-value {
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+
+        .nn-confidence-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-align: right;
+        }
+
+        .explanation-card {
+            background: #f9f9f9;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .explanation-card h3 {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .explanation-text p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: #333;
+            font-weight: 300;
+            margin-bottom: 1rem;
+        }
+
+        .explanation-text p:last-child { margin-bottom: 0; }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-primary {
+            background: #0a0a0a;
+            color: #fff;
+            padding: 0.85rem 2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover { opacity: 0.75; }
+
+        .btn-secondary {
+            background: transparent;
+            color: #0a0a0a;
+            padding: 0.85rem 2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid #e8e8e8;
+            transition: border-color 0.2s;
+        }
+
+        .btn-secondary:hover { border-color: #0a0a0a; }
+
+        .no-results {
+            text-align: center;
+            padding: 6rem 0;
+            color: #888;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #e8e8e8;
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <a href="/"><img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Neuralitx"></a>
+        </div>
+        <div class="nav-links">
+            <a href="/about">About</a>
+            <a href="/how-it-works">How it works</a>
+            <a href="/beta" class="nav-cta">Try Beta</a>
+        </div>
+    </nav>
+
+    <div class="results-container" id="resultsContainer">
+        <div class="no-results" id="noResults">
+            <p>No results found. <a href="/beta">Upload a recording →</a></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Neuralitx</p>
+    </footer>
+
+    <script>
+        const data = JSON.parse(sessionStorage.getItem('analysisResults') || 'null');
+        const container = document.getElementById('resultsContainer');
+        const noResults = document.getElementById('noResults');
+
+        if (data) {
+            noResults.style.display = 'none';
+
+            const isClean = data.artifact_info.is_clean;
+            const artifactPct = data.artifact_info.artifact_percentage.toFixed(1);
+            const bands = data.band_powers;
+            const maxBand = Math.max(...Object.values(bands));
+
+            // Format explanation as clean paragraphs
+            const explanationHTML = data.explanation
+                .split('\n\n')
+                .filter(p => p.trim().length > 0)
+                .map(p => `<p>${p.trim()}</p>`)
+                .join('');
+
+            container.innerHTML = `
+                <p class="results-label">Analysis Results</p>
+                <h1>Your recording has been analyzed.</h1>
+
+                <div class="status-badge ${isClean ? 'status-clean' : 'status-artifact'}">
+                    ${isClean ? '✓ Clean Signal' : '⚠ Artifacts Detected'}
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Frequency Band Powers</h3>
+                        ${Object.entries(bands).map(([band, power]) => `
+                            <div class="band-row">
+                                <span class="band-label">${band.charAt(0).toUpperCase() + band.slice(1)}</span>
+                                <div class="band-bar-bg">
+                                    <div class="band-bar" style="width: ${maxBand > 0 ? (power/maxBand*100).toFixed(1) : 0}%"></div>
+                                </div>
+                                <span class="band-value">${power.toExponential(2)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Signal Quality</h3>
+                        <div class="artifact-stat">
+                            <div class="artifact-stat-label">Artifact percentage</div>
+                            <div class="artifact-stat-value">${artifactPct}%</div>
+                        </div>
+                        <div class="artifact-stat">
+                            <div class="artifact-stat-label">Signal status</div>
+                            <div class="artifact-stat-value">${isClean ? 'Clean' : 'Noisy'}</div>
+                        </div>
+                        <div class="artifact-stat">
+                            <div class="artifact-stat-label">Dominant band</div>
+                            <div class="artifact-stat-value" style="text-transform:capitalize">${data.dominant_band}</div>
+                        </div>
+                    </div>
+
+                    <div class="nn-result">
+                        <div>
+                            <h3>Neural Network Classification</h3>
+                            <div class="nn-classification">${data.nn_result.classification}</div>
+                        </div>
+                        <div>
+                            <div class="nn-confidence-value">${(data.nn_result.confidence * 100).toFixed(0)}%</div>
+                            <div class="nn-confidence-label">confidence</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="explanation-card">
+                    <h3>AI Explanation</h3>
+                    <div class="explanation-text">${explanationHTML}</div>
+                </div>
+
+                <div class="actions">
+                    <a href="/beta" class="btn-primary">Analyze another recording</a>
+                    <a href="/" class="btn-secondary">Back to home</a>
+                </div>
+            `;
+        }
+    </script>
+
+</body>
+</html>

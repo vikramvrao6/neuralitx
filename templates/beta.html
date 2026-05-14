@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuralitx — Beta</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #ffffff;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .logo img { height: 28px; width: auto; }
+
+        .nav-links a {
+            color: #0a0a0a;
+            text-decoration: none;
+            margin-left: 2.5rem;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover { opacity: 0.5; }
+
+        .nav-cta {
+            border: 1px solid #0a0a0a !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 999px;
+        }
+
+        .beta-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 8rem 2rem;
+        }
+
+        .beta-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .beta-container h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+            line-height: 1.15;
+        }
+
+        .beta-container p {
+            font-size: 0.95rem;
+            color: #666;
+            font-weight: 300;
+            line-height: 1.7;
+            margin-bottom: 3rem;
+        }
+
+        .upload-area {
+            border: 1.5px dashed #d0d0d0;
+            border-radius: 16px;
+            padding: 4rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: #0a0a0a;
+            background: #fafafa;
+        }
+
+        .upload-area.dragover {
+            border-color: #0a0a0a;
+            background: #f5f5f5;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-area h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area p {
+            font-size: 0.85rem;
+            color: #999;
+            margin-bottom: 0;
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-selected {
+            display: none;
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.85rem;
+            color: #444;
+            margin-bottom: 1.5rem;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .file-selected.visible { display: flex; }
+
+        .btn-analyze {
+            background: #0a0a0a;
+            color: #fff;
+            padding: 0.9rem 2.5rem;
+            border-radius: 999px;
+            border: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-analyze:hover { opacity: 0.75; }
+        .btn-analyze:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .loading.visible { display: block; }
+
+        .loading-steps {
+            list-style: none;
+            text-align: left;
+            max-width: 300px;
+            margin: 2rem auto 0;
+        }
+
+        .loading-steps li {
+            font-size: 0.85rem;
+            color: #888;
+            padding: 0.4rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .loading-steps li.active { color: #0a0a0a; font-weight: 500; }
+        .loading-steps li.done { color: #888; }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 2px solid #e8e8e8;
+            border-top-color: #0a0a0a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-msg {
+            display: none;
+            background: #fff5f5;
+            border: 1px solid #ffd0d0;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.85rem;
+            color: #cc0000;
+            margin-top: 1rem;
+        }
+
+        .error-msg.visible { display: block; }
+
+        .note {
+            font-size: 0.8rem;
+            color: #aaa;
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #e8e8e8;
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <a href="/"><img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Neuralitx"></a>
+        </div>
+        <div class="nav-links">
+            <a href="/about">About</a>
+            <a href="/how-it-works">How it works</a>
+            <a href="/beta" class="nav-cta">Try Beta</a>
+        </div>
+    </nav>
+
+    <div class="beta-container">
+        <p class="beta-label">Beta</p>
+        <h1>Upload your neural recording.</h1>
+        <p>Upload an EEG or LFP recording in EDF format. Neuralitx will clean the signal, classify artifacts, and generate an AI-powered explanation of your data.</p>
+
+        <div class="upload-area" id="uploadArea">
+            <input type="file" id="fileInput" accept=".edf">
+            <div class="upload-icon">↑</div>
+            <h3>Drop your EDF file here</h3>
+            <p>or click to browse</p>
+        </div>
+
+        <div class="file-selected" id="fileSelected">
+            <span>📄</span>
+            <span id="fileName"></span>
+        </div>
+
+        <button class="btn-analyze" id="analyzeBtn" disabled>Analyze Recording</button>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p style="font-size:0.9rem; color:#444;">Analyzing your recording...</p>
+            <ul class="loading-steps">
+                <li id="step1" class="active">⟳ Processing signal</li>
+                <li id="step2">⟳ Running neural network</li>
+                <li id="step3">⟳ Retrieving literature context</li>
+                <li id="step4">⟳ Generating AI explanation</li>
+            </ul>
+        </div>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <p class="note">Supported format: EDF &nbsp;·&nbsp; Free during beta &nbsp;·&nbsp; No account required</p>
+    </div>
+
+    <footer>
+        <p>© 2026 Neuralitx</p>
+    </footer>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const fileSelected = document.getElementById('fileSelected');
+        const fileName = document.getElementById('fileName');
+        const uploadArea = document.getElementById('uploadArea');
+        const loading = document.getElementById('loading');
+        const errorMsg = document.getElementById('errorMsg');
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+                fileSelected.classList.add('visible');
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.name.endsWith('.edf')) {
+                fileInput.files = e.dataTransfer.files;
+                fileName.textContent = file.name;
+                fileSelected.classList.add('visible');
+                analyzeBtn.disabled = false;
+            }
+        });
+
+        const steps = ['step1', 'step2', 'step3', 'step4'];
+        let currentStep = 0;
+
+        function advanceStep() {
+            if (currentStep > 0) {
+                document.getElementById(steps[currentStep - 1]).textContent =
+                    '✓ ' + document.getElementById(steps[currentStep - 1]).textContent.slice(2);
+                document.getElementById(steps[currentStep - 1]).classList.remove('active');
+                document.getElementById(steps[currentStep - 1]).classList.add('done');
+            }
+            if (currentStep < steps.length) {
+                document.getElementById(steps[currentStep]).classList.add('active');
+                currentStep++;
+            }
+        }
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!fileInput.files.length) return;
+
+            analyzeBtn.disabled = true;
+            loading.classList.add('visible');
+            errorMsg.classList.remove('visible');
+            currentStep = 0;
+
+            advanceStep();
+            const stepInterval = setInterval(advanceStep, 4000);
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                clearInterval(stepInterval);
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                sessionStorage.setItem('analysisResults', JSON.stringify(data));
+                window.location.href = '/results';
+
+            } catch (err) {
+                clearInterval(stepInterval);
+                loading.classList.remove('visible');
+                analyzeBtn.disabled = false;
+                errorMsg.textContent = 'Error: ' + err.message;
+                errorMsg.classList.add('visible');
+            }
+        });
+    </script>
+
+</body>
+</html>

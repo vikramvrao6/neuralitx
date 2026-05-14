@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuralitx — About</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #ffffff;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .logo img { height: 28px; width: auto; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #0a0a0a;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover { opacity: 0.5; }
+
+        .nav-cta {
+            border: 1px solid #0a0a0a !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 999px;
+            font-weight: 500 !important;
+        }
+
+        .nav-cta:hover {
+            background: #0a0a0a !important;
+            color: #fff !important;
+            opacity: 1 !important;
+        }
+
+        .about-container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 10rem 2rem 8rem;
+        }
+
+        .about-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .about-container h1 {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 3rem;
+        }
+
+        .about-body p {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #444;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+        }
+
+        .divider {
+            border: none;
+            border-top: 1px solid #e8e8e8;
+            margin: 4rem 0;
+        }
+
+        .about-body h2 {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: -0.01em;
+            margin-bottom: 1.5rem;
+        }
+
+        .mission-statement {
+            font-size: 1.3rem;
+            font-weight: 300;
+            line-height: 1.6;
+            color: #0a0a0a;
+            border-left: 2px solid #0a0a0a;
+            padding-left: 1.5rem;
+            margin: 3rem 0;
+        }
+
+        .cta-section {
+            margin-top: 4rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-primary {
+            background: #0a0a0a;
+            color: #fff;
+            padding: 0.85rem 2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover { opacity: 0.75; }
+
+        .btn-secondary {
+            background: transparent;
+            color: #0a0a0a;
+            padding: 0.85rem 2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid #e8e8e8;
+            transition: border-color 0.2s;
+        }
+
+        .btn-secondary:hover { border-color: #0a0a0a; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid #e8e8e8;
+            font-size: 0.8rem;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <a href="/"><img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Neuralitx"></a>
+        </div>
+        <div class="nav-links">
+            <a href="/about">About</a>
+            <a href="/how-it-works">How it works</a>
+            <a href="/beta" class="nav-cta">Try Beta</a>
+        </div>
+    </nav>
+
+    <div class="about-container">
+        <p class="about-label">About</p>
+        <h1>Built by a neuroscientist,<br>for neuroscientists.</h1>
+
+        <div class="about-body">
+            <p>Neuralitx was built out of a simple frustration: neural signal data is hard to interpret quickly. Researchers spend hours preprocessing recordings in MATLAB, manually identifying artifacts, and trying to connect raw signal patterns to meaningful biological findings.</p>
+
+            <p>The tools exist to do the analysis. What's missing is the layer that connects the numbers to the science — something that takes a processed signal and tells you, in plain English, what it means.</p>
+
+            <div class="mission-statement">
+                Neuralitx's mission is to make neural signal analysis faster, more accessible, and more interpretable for every researcher.
+            </div>
+
+            <hr class="divider">
+
+            <h2>How it was built</h2>
+
+            <p>Neuralitx combines a Python signal processing engine with a trained neural network classifier and a retrieval-augmented generation system built on neuroscience literature. The AI explanation layer uses Claude to synthesize the findings into a plain English report grounded in peer-reviewed research.</p>
+
+            <p>The signal processing pipeline handles bandpass filtering, frequency band extraction, and artifact detection using validated algorithms from the MNE and SciPy libraries. The neural network classifies signal quality based on extracted features. The RAG system retrieves relevant context from a curated neuroscience knowledge base before generating the final explanation.</p>
+
+            <hr class="divider">
+
+            <h2>Who it's for</h2>
+
+            <p>Neuralitx is designed first for neuroscience researchers and lab experimenters running EEG and LFP experiments. If you record neural data and want faster, more interpretable analysis — this is for you.</p>
+
+            <p>Engineers and developers building brain-computer interfaces or neural signal pipelines are the second audience. The analysis layer and AI output can serve as a fast interpretability layer on top of your existing pipeline.</p>
+        </div>
+
+        <div class="cta-section">
+            <a href="/beta" class="btn-primary">Try the Beta</a>
+            <a href="/how-it-works" class="btn-secondary">How it works →</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Neuralitx</p>
+    </footer>
+
+</body>
+</html>

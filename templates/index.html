@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuralitx</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #ffffff;
+            color: #0a0a0a;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .logo img { height: 28px; width: auto; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: #0a0a0a;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 400;
+            transition: opacity 0.2s;
+        }
+
+        .nav-links a:hover { opacity: 0.5; }
+
+        .nav-cta {
+            border: 1px solid #0a0a0a !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 999px;
+            font-weight: 500 !important;
+        }
+
+        .nav-cta:hover {
+            background: #0a0a0a !important;
+            color: #fff !important;
+            opacity: 1 !important;
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 80px;
+        }
+
+        .hero-brain {
+            width: 100%;
+            height: 62vh;
+            pointer-events: none;
+            overflow: hidden;
+            position: relative;
+            margin-top: 0;
+        }
+
+        .hero-brain iframe {
+            width: 150%;
+            height: 150%;
+            border: none;
+            pointer-events: none;
+            position: absolute;
+            top: -25%;
+            left: -25%;
+        }
+
+        .hero-content {
+            width: 100%;
+            padding: 3rem 5rem 8rem;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            font-weight: 300;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            min-height: 10rem;
+        }
+
+        .cursor {
+            display: inline-block;
+            font-weight: 300;
+            animation: blink 1s step-end infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .hero-body {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .hero-body.visible { opacity: 1; }
+
+        .hero-body p {
+            font-size: 0.95rem;
+            line-height: 1.75;
+            color: #555;
+            font-weight: 300;
+        }
+
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            opacity: 0;
+            transition: opacity 0.8s ease 0.3s;
+        }
+
+        .hero-cta.visible { opacity: 1; }
+
+        .btn-primary {
+            background: #0a0a0a;
+            color: #fff;
+            padding: 0.85rem 2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary:hover { opacity: 0.75; }
+
+        .btn-link {
+            color: #0a0a0a;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+
+        .divider { border: none; border-top: 1px solid #e8e8e8; margin: 0 5rem; }
+
+        .how-it-works { padding: 8rem 5rem; }
+
+        .section-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 4rem;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2rem;
+        }
+
+        .step { border-top: 1px solid #0a0a0a; padding-top: 1.5rem; }
+        .step-icon { margin-bottom: 1.25rem; }
+        .step-number { font-size: 0.75rem; color: #888; margin-bottom: 1rem; }
+        .step-title { font-size: 1rem; font-weight: 500; margin-bottom: 0.75rem; }
+        .step-desc { font-size: 0.85rem; color: #666; line-height: 1.6; font-weight: 300; }
+
+        .for-who { padding: 8rem 5rem; background: #f9f9f9; }
+
+        .for-who-split {
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 0;
+            margin-top: 4rem;
+        }
+
+        .for-who-side { padding: 3rem 4rem; }
+        .for-who-side:first-child { padding-left: 0; }
+        .for-who-side:last-child { padding-right: 0; }
+
+        .for-who-divider { background: #d8d8d8; width: 1px; }
+
+        .for-who-side canvas { margin-bottom: 1.5rem; display: block; }
+
+        .for-who-side h3 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+
+        .for-who-side p {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.7;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            max-width: 380px;
+        }
+
+        .card-link {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #0a0a0a;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: gap 0.2s;
+        }
+
+        .card-link:hover { gap: 0.7rem; }
+
+        .beta-cta { padding: 10rem 5rem; text-align: center; }
+
+        .beta-cta h2 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        .beta-cta p {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 300;
+            margin-bottom: 3rem;
+        }
+
+        footer {
+            padding: 2rem 5rem;
+            border-top: 1px solid #e8e8e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer p { font-size: 0.8rem; color: #888; }
+        footer a { font-size: 0.8rem; color: #888; text-decoration: none; }
+        footer a:hover { color: #0a0a0a; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">
+            <a href="/"><img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Neuralitx"></a>
+        </div>
+        <div class="nav-links">
+            <a href="/about">About</a>
+            <a href="/how-it-works">How it works</a>
+            <a href="/beta" class="nav-cta">Try Beta</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-brain">
+            <iframe src='https://my.spline.design/particleaibrain-i8sBdq87CWKuMUDjV2c2u5uY/' frameborder='0'></iframe>
+        </div>
+        <div class="hero-content">
+            <h1><span id="typed"></span><span class="cursor">|</span></h1>
+            <div class="hero-body" id="heroBody">
+                <p>Upload your EEG or LFP recordings. Neuralitx cleans, analyzes, and classifies your neural data automatically.</p>
+                <p>Our AI interprets the findings in plain English — grounded in neuroscience literature, built for researchers.</p>
+            </div>
+            <div class="hero-cta" id="heroCta">
+                <a href="/beta" class="btn-primary">Try the Beta</a>
+                <a href="/how-it-works" class="btn-link">Learn how it works →</a>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="how-it-works">
+        <p class="section-label">The pipeline</p>
+        <div class="steps">
+            <div class="step">
+                <div class="step-icon"><canvas id="icon1" width="60" height="60"></canvas></div>
+                <div class="step-number">01</div>
+                <div class="step-title">Upload Data</div>
+                <div class="step-desc">Upload your EEG or LFP recording in EDF format directly from your recording device.</div>
+            </div>
+            <div class="step">
+                <div class="step-icon"><canvas id="icon2" width="60" height="60"></canvas></div>
+                <div class="step-number">02</div>
+                <div class="step-title">Signal Processing</div>
+                <div class="step-desc">Bandpass filtering, noise removal, and frequency band extraction using validated algorithms.</div>
+            </div>
+            <div class="step">
+                <div class="step-icon"><canvas id="icon3" width="60" height="60"></canvas></div>
+                <div class="step-number">03</div>
+                <div class="step-title">Neural Network</div>
+                <div class="step-desc">A trained classifier detects artifacts and flags signal quality issues automatically.</div>
+            </div>
+            <div class="step">
+                <div class="step-icon"><canvas id="icon4" width="60" height="60"></canvas></div>
+                <div class="step-number">04</div>
+                <div class="step-title">RAG System</div>
+                <div class="step-desc">Relevant neuroscience literature is retrieved to contextualize your findings.</div>
+            </div>
+            <div class="step">
+                <div class="step-icon"><canvas id="icon5" width="60" height="60"></canvas></div>
+                <div class="step-number">05</div>
+                <div class="step-title">AI Explanation</div>
+                <div class="step-desc">A plain English report explains what your data shows and what to look for next.</div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider">
+
+    <section class="for-who">
+        <p class="section-label">Who it's for</p>
+        <div class="for-who-split">
+            <div class="for-who-side">
+                <canvas id="whoIcon1" width="70" height="70"></canvas>
+                <h3>Researchers &<br>Experimenters</h3>
+                <p>Designed for neuroscience labs running EEG and LFP experiments. Spend less time preprocessing data and more time on what matters — the science.</p>
+                <a href="/beta" class="card-link">Try the beta →</a>
+            </div>
+            <div class="for-who-divider"></div>
+            <div class="for-who-side">
+                <canvas id="whoIcon2" width="70" height="70"></canvas>
+                <h3>Engineers &<br>Developers</h3>
+                <p>Building brain-computer interfaces or neural signal pipelines? Neuralitx gives you a fast analysis layer with interpretable AI output.</p>
+                <a href="/how-it-works" class="card-link">Learn more →</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="beta-cta">
+        <h2>Start analyzing your data.</h2>
+        <p>Free during beta. No account required.</p>
+        <a href="/beta" class="btn-primary">Try Neuralitx Beta</a>
+    </section>
+
+    <footer>
+        <p>© 2026 Neuralitx</p>
+        <div style="display:flex; gap:2rem;">
+            <a href="/about">About</a>
+            <a href="/how-it-works">How it works</a>
+            <a href="/beta">Beta</a>
+        </div>
+    </footer>
+
+    <script>
+    const text = "Neural signal analysis,\npowered by AI";
+    const el = document.getElementById('typed');
+    const body = document.getElementById('heroBody');
+    const cta = document.getElementById('heroCta');
+    let i = 0;
+    function type() {
+        if (i < text.length) {
+            if (text[i] === '\n') el.innerHTML += '<br>';
+            else el.innerHTML += text[i];
+            i++;
+            setTimeout(type, 55);
+        } else {
+            body.classList.add('visible');
+            cta.classList.add('visible');
+        }
+    }
+    window.addEventListener('load', () => setTimeout(type, 600));
+
+    const C = '10,10,10';
+
+    // ICON 1 — Upload arrow bouncing
+    (function() {
+        const cv = document.getElementById('icon1');
+        const cx = cv.getContext('2d');
+        let t = 0;
+        function draw() {
+            cx.clearRect(0,0,60,60);
+            const y = 30 + Math.sin(t) * 5;
+            cx.strokeStyle = `rgba(${C},1)`; cx.lineWidth = 2; cx.lineCap = 'round';
+            cx.beginPath(); cx.moveTo(30,y+12); cx.lineTo(30,y-8); cx.stroke();
+            cx.beginPath(); cx.moveTo(22,y-2); cx.lineTo(30,y-10); cx.lineTo(38,y-2); cx.stroke();
+            cx.beginPath(); cx.moveTo(18,y+14); cx.lineTo(42,y+14); cx.stroke();
+            t += 0.06; requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
+    // ICON 2 — EEG waveform
+    (function() {
+        const cv = document.getElementById('icon2');
+        const cx = cv.getContext('2d');
+        let t = 0;
+        function draw() {
+            cx.clearRect(0,0,60,60);
+            cx.strokeStyle = `rgba(${C},1)`; cx.lineWidth = 1.8; cx.lineCap = 'round'; cx.lineJoin = 'round';
+            cx.beginPath();
+            for(let x=0;x<=60;x++){
+                const wave = Math.sin((x/60)*Math.PI*4+t*3)*8 + Math.sin((x/60)*Math.PI*8+t*2)*4 + Math.sin((x/60)*Math.PI*2+t)*5;
+                if(x===0) cx.moveTo(x,30+wave); else cx.lineTo(x,30+wave);
+            }
+            cx.stroke(); t += 0.03; requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
+    // ICON 3 — Neural network nodes with pulses
+    (function() {
+        const cv = document.getElementById('icon3');
+        const cx = cv.getContext('2d');
+        const nodes = [{x:10,y:20},{x:10,y:40},{x:30,y:15},{x:30,y:30},{x:30,y:45},{x:50,y:30}];
+        const edges = [[0,2],[0,3],[0,4],[1,2],[1,3],[1,4],[2,5],[3,5],[4,5]];
+        let pulses = [];
+        function spawnPulse() { const e=edges[Math.floor(Math.random()*edges.length)]; pulses.push({edge:e,t:0,spd:0.03+Math.random()*0.02}); }
+        for(let i=0;i<3;i++) spawnPulse();
+        function draw() {
+            cx.clearRect(0,0,60,60);
+            cx.strokeStyle=`rgba(${C},0.25)`; cx.lineWidth=0.8;
+            for(const [a,b] of edges){ cx.beginPath(); cx.moveTo(nodes[a].x,nodes[a].y); cx.lineTo(nodes[b].x,nodes[b].y); cx.stroke(); }
+            for(let i=pulses.length-1;i>=0;i--){
+                const p=pulses[i],a=nodes[p.edge[0]],b=nodes[p.edge[1]];
+                const px=a.x+(b.x-a.x)*p.t,py=a.y+(b.y-a.y)*p.t;
+                cx.beginPath(); cx.arc(px,py,2,0,Math.PI*2); cx.fillStyle=`rgba(${C},1)`; cx.fill();
+                p.t+=p.spd; if(p.t>=1) pulses.splice(i,1);
+            }
+            for(const n of nodes){ cx.beginPath(); cx.arc(n.x,n.y,3,0,Math.PI*2); cx.fillStyle=`rgba(${C},0.9)`; cx.fill(); }
+            if(pulses.length<4) spawnPulse();
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
+    // ICON 4 — Magnifying glass scanning
+    (function() {
+        const cv = document.getElementById('icon4');
+        const cx = cv.getContext('2d');
+        let t = 0;
+        function draw() {
+            cx.clearRect(0,0,60,60); cx.lineCap='round';
+            const lineAlpha=[0.2,0.2,0.2];
+            lineAlpha[Math.floor((t*0.8)%3)]=1;
+            for(let i=0;i<3;i++){
+                cx.strokeStyle=`rgba(${C},${lineAlpha[i]})`; cx.lineWidth=2;
+                cx.beginPath(); cx.moveTo(8,18+i*10); cx.lineTo(36,18+i*10); cx.stroke();
+            }
+            const gx=38+Math.sin(t*0.8)*4,gy=30+Math.cos(t*0.8)*6;
+            cx.strokeStyle=`rgba(${C},1)`; cx.lineWidth=2;
+            cx.beginPath(); cx.arc(gx,gy,8,0,Math.PI*2); cx.stroke();
+            cx.beginPath(); cx.moveTo(gx+6,gy+6); cx.lineTo(gx+12,gy+12); cx.stroke();
+            t+=0.04; requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
+    // ICON 5 — Typewriter text lines
+    (function() {
+        const cv = document.getElementById('icon5');
+        const cx = cv.getContext('2d');
+        let t = 0;
+        const lines = [{width:44,y:18},{width:36,y:28},{width:40,y:38},{width:28,y:48}];
+        function draw() {
+            cx.clearRect(0,0,60,60); cx.lineCap='round'; cx.lineWidth=2;
+            const pos=t%80;
+            lines.forEach((line,i)=>{
+                const progress=Math.min(1,Math.max(0,(pos-i*18)/16));
+                const w=line.width*progress;
+                cx.strokeStyle=`rgba(${C},${0.3+progress*0.7})`;
+                if(w>0){ cx.beginPath(); cx.moveTo(8,line.y); cx.lineTo(8+w,line.y); cx.stroke(); }
+            });
+            const cursorLine=lines[Math.min(3,Math.floor(pos/18))];
+            const cursorProgress=Math.min(1,Math.max(0,(pos-Math.floor(pos/18)*18)/16));
+            const cursorX=8+cursorLine.width*cursorProgress+3;
+            if(Math.floor(t/8)%2===0){
+                cx.strokeStyle=`rgba(${C},1)`; cx.lineWidth=1.5;
+                cx.beginPath(); cx.moveTo(cursorX,cursorLine.y-5); cx.lineTo(cursorX,cursorLine.y+5); cx.stroke();
+            }
+            t+=0.5; requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
+    // WHO ICON 1 — Flask for researchers
+    (function() {
+        const cv = document.getElementById('whoIcon1');
+        const cx = cv.getContext('2d');
+        let t = 0;
+        function draw() {
+            cx.clearRect(0,0,70,70);
+            cx.strokeStyle='rgba(10,10,10,1)'; cx.lineWidth=2; cx.lineCap='round'; cx.lineJoin='round';
+            cx.beginPath(); cx.moveTo(25,15); cx.lineTo(25,32); cx.lineTo(14,52); cx.lineTo(56,52); cx.lineTo(45,32); cx.lineTo(45,15); cx.stroke();
+            cx.beginPath(); cx.moveTo(20,15); cx.lineTo(50,15); cx.stroke();
+            const liquidY=44+Math.sin(t)*2;
+            cx.beginPath(); cx.moveTo(17,liquidY); cx.lineTo(53,liquidY); cx.strokeStyle='rgba(10,10,10,0.2)'; cx.stroke();
+            const b1y=48-((t*15)%30),b2y=48-((t*12+10)%30);
+            cx.fillStyle='rgba(10,10,10,0.5)';
+            cx.beginPath(); cx.arc(30,b1y,1.5,0,Math.PI*2); cx.fill();
+            cx.beginPath(); cx.arc(38,b2y,1.5,0,Math.PI*2); cx.fill();
+            t+=0.04; requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
+    // WHO ICON 2 — Rotating gear
+    (function() {
+        const cv = document.getElementById('whoIcon2');
+        const cx = cv.getContext('2d');
+        let t = 0;
+        function drawGear(x, y, r, teeth, angle) {
+            const innerR = r * 0.65;
+            const toothH = r * 0.35;
+            const toothW = (Math.PI * 2 / teeth) * 0.4;
+            cx.beginPath();
+            for(let i=0; i<teeth; i++) {
+                const a1 = angle + (i/teeth)*Math.PI*2;
+                const a2 = a1 + toothW;
+                const a3 = a1 + (Math.PI*2/teeth)*0.5;
+                cx.lineTo(x+Math.cos(a1)*innerR, y+Math.sin(a1)*innerR);
+                cx.lineTo(x+Math.cos(a1)*(innerR+toothH), y+Math.sin(a1)*(innerR+toothH));
+                cx.lineTo(x+Math.cos(a2)*(innerR+toothH), y+Math.sin(a2)*(innerR+toothH));
+                cx.lineTo(x+Math.cos(a2)*innerR, y+Math.sin(a2)*innerR);
+                cx.lineTo(x+Math.cos(a3)*innerR, y+Math.sin(a3)*innerR);
+            }
+            cx.closePath();
+            cx.stroke();
+            cx.beginPath();
+            cx.arc(x, y, innerR*0.45, 0, Math.PI*2);
+            cx.stroke();
+        }
+        function draw() {
+            cx.clearRect(0,0,70,70);
+            cx.strokeStyle='rgba(10,10,10,0.9)'; cx.lineWidth=1.8; cx.lineCap='round'; cx.lineJoin='round';
+            drawGear(35, 35, 22, 10, t);
+            t+=0.012; requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+    </script>
+
+</body>
+</html>
