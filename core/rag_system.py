@@ -1,10 +1,7 @@
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import TextLoader
-import os
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import FakeEmbeddings
 
-# Neuroscience knowledge base - we'll expand this with real papers later
 NEUROSCIENCE_KNOWLEDGE = """
 Delta waves (0.5-4 Hz) are high amplitude brain waves associated with deep sleep and unconscious processes.
 Elevated delta activity during wakefulness may indicate brain injury or pathological conditions.
@@ -36,37 +33,26 @@ LFP signals contain information about synaptic inputs and local network dynamics
 Frequency band analysis of LFP can reveal oscillatory patterns related to behavior and cognition.
 """
 
-def build_knowledge_base():
-    """Build FAISS vector store from neuroscience knowledge"""
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=200,
-        chunk_overlap=20
-    )
-    
-    chunks = text_splitter.create_documents([NEUROSCIENCE_KNOWLEDGE])
-    
-    embeddings = HuggingFaceEmbeddings(
-        model_name="sentence-transformers/all-MiniLM-L6-v2"
-    )
-    
-    vectorstore = FAISS.from_documents(chunks, embeddings)
-    return vectorstore
-
-def query_knowledge_base(vectorstore, query, k=3):
-    """Query the knowledge base for relevant context"""
-    docs = vectorstore.similarity_search(query, k=k)
-    context = "\n".join([doc.page_content for doc in docs])
-    return context
+BAND_CONTEXT = {
+    'delta': "Delta band dominance suggests deep sleep states or possible pathological slowing. In awake subjects, elevated delta may indicate brain injury or encephalopathy.",
+    'theta': "Theta band dominance is associated with drowsiness, memory consolidation, and meditative states. Frontal theta is linked to cognitive load and working memory tasks.",
+    'alpha': "Alpha band dominance indicates relaxed wakefulness, typically with eyes closed. Alpha suppression during task performance is a normal finding indicating active processing.",
+    'beta': "Beta band dominance suggests active thinking, alertness, or anxiety. High beta can also result from certain medications or hyperarousal states.",
+    'gamma': "Gamma band dominance is associated with higher cognitive processing, sensory binding, and conscious awareness. Abnormal gamma may indicate neurological conditions."
+}
 
 def get_rag_context(band_powers, artifact_info):
-    """Get relevant neuroscience context for the analysis results"""
-    vectorstore = build_knowledge_base()
-    
-    # Build query from analysis results
+    """Get relevant neuroscience context based on analysis results"""
     dominant_band = max(band_powers, key=band_powers.get)
-    artifact_status = "high artifact" if not artifact_info['is_clean'] else "clean signal"
+    artifact_status = "high artifact contamination" if not artifact_info['is_clean'] else "clean signal quality"
     
-    query = f"dominant {dominant_band} waves {artifact_status} EEG analysis"
-    context = query_knowledge_base(vectorstore, query)
+    band_context = BAND_CONTEXT.get(dominant_band, "")
     
+    artifact_context = ""
+    if not artifact_info['is_clean']:
+        artifact_context = "The signal contains significant artifacts. Motion artifacts appear as high amplitude low frequency distortions. Muscle artifacts appear as high frequency noise. Consider re-recording or additional preprocessing."
+    else:
+        artifact_context = "The signal shows clean quality with artifact percentage below threshold. This indicates good electrode contact and minimal movement during recording."
+    
+    context = f"{band_context}\n\n{artifact_context}\n\n{NEUROSCIENCE_KNOWLEDGE}"
     return context
