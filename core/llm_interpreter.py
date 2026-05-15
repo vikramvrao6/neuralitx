@@ -8,8 +8,6 @@ def generate_explanation(band_powers, artifact_info, nn_result, rag_context):
     
     prompt = f"""You are a neuroscience expert analyzing EEG/neural signal data for a researcher.
 
-Here are the analysis results:
-
 FREQUENCY BAND POWERS:
 - Delta (0.5-4 Hz): {band_powers['delta']:.6f}
 - Theta (4-8 Hz): {band_powers['theta']:.6f}
@@ -25,16 +23,13 @@ NEURAL NETWORK CLASSIFICATION:
 - Classification: {nn_result['classification']}
 - Confidence: {nn_result['confidence']:.2f}
 
-RELEVANT NEUROSCIENCE CONTEXT:
-{rag_context}
+CONTEXT: {rag_context[:500]}
 
-Write a clear, concise explanation of these findings for a neuroscience researcher. Cover the overall signal quality, what the dominant frequency bands suggest, any concerns or notable patterns, and recommendations.
-
-IMPORTANT: Write in plain paragraphs only. Do not use markdown, headers, bullet points, asterisks, pound signs, or any special formatting whatsoever. Just clean flowing prose in 3-4 paragraphs."""
+Write 2 plain paragraphs explaining these findings for a neuroscience researcher. No markdown, no headers, no bullet points."""
 
     message = client.messages.create(
         model="claude-sonnet-4-5",
-        max_tokens=1000,
+        max_tokens=400,
         messages=[
             {"role": "user", "content": prompt}
         ]
