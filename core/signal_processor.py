@@ -3,8 +3,10 @@ import scipy.signal as signal
 import mne
 
 def load_eeg_file(file_path):
-    """Load an EEG file using MNE"""
-    raw = mne.io.read_raw_edf(file_path, preload=True, verbose=False)
+    """Load an EEG file using MNE - only first 60 seconds to save memory"""
+    raw = mne.io.read_raw_edf(file_path, preload=False, verbose=False)
+    raw.crop(tmax=60)
+    raw.load_data()
     return raw
 
 def filter_signal(raw, low_freq=1.0, high_freq=40.0):
