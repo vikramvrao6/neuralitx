@@ -8,7 +8,9 @@ import os
 
 analysis_bp = Blueprint("analysis", __name__)
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'database', 'neuralytic.db')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(BASE_DIR, 'database', 'neuralitx.db')
+UPLOAD_DIR = os.path.join(BASE_DIR, 'uploads')
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
@@ -25,9 +27,8 @@ def analyze():
     if file.filename == '':
         return jsonify({'error': 'No file selected'}), 400
     
-    upload_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'uploads')
-    os.makedirs(upload_dir, exist_ok=True)
-    file_path = os.path.join(upload_dir, file.filename)
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    file_path = os.path.join(UPLOAD_DIR, file.filename)
     file.save(file_path)
     
     try:
