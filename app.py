@@ -10,6 +10,15 @@ app.secret_key = os.getenv("SECRET_KEY", "neuralitx-dev-key")
 os.makedirs('uploads', exist_ok=True)
 os.makedirs('database', exist_ok=True)
 
+import sqlite3
+def init_db():
+    conn = sqlite3.connect('database/neuralytic.db')
+    conn.executescript(open('database/schema.sql').read())
+    conn.commit()
+    conn.close()
+
+init_db()
+
 @app.after_request
 def add_headers(response):
     response.headers['Content-Security-Policy'] = "frame-src *; default-src * 'unsafe-inline' 'unsafe-eval'"
