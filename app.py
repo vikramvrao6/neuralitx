@@ -7,6 +7,9 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "neuralitx-dev-key")
 
+os.makedirs('uploads', exist_ok=True)
+os.makedirs('database', exist_ok=True)
+
 @app.after_request
 def add_headers(response):
     response.headers['Content-Security-Policy'] = "frame-src *; default-src * 'unsafe-inline' 'unsafe-eval'"
